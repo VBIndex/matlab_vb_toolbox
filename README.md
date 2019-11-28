@@ -1,3 +1,3 @@
-# vb_index
+Voigt-Bailey index toolbox in Matlab
 
-Full details to be uploaded later
+
