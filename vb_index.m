@@ -1,4 +1,4 @@
-function RESULT = vb_index(GIFTI_SURF, DATA, CORT_INDEX, OUTPUT, nthreads)
+function RESULT = vb_index(GIFTI_SURF, DATA, NORM, CORT_INDEX, OUTPUT, nthreads)
 
 % Script to produce the VB index
 %
@@ -9,7 +9,7 @@ function RESULT = vb_index(GIFTI_SURF, DATA, CORT_INDEX, OUTPUT, nthreads)
 % vector if no output to save "[]"
 % nthreads == number of threads for this command (default == 0)
 %
-% RESULT = vb_index(GIFTI_SURF, DATA, CORT_INDEX, OUTPUT, nthreads)
+% RESULT = vb_index(GIFTI_SURF, DATA, NORM, CORT_INDEX, OUTPUT, nthreads)
 %
 % claude.bajada@um.edu.mt
 
@@ -18,12 +18,18 @@ if ~exist('nthreads' , 'var')
     nthreads = 0;
 end
 
+if ~(strcmpi(NORM , 'unnorm') || strcmpi(NORM , 'geig'))
+    error('the value of NORM should be unnorm or geig')
+end
+
 % initialise RESULT vector for speed optimisation
 RESULT = zeros(size(DATA,1),1);
 
 parfor (i = 1:size(GIFTI_SURF.vertices,1), nthreads)
     
     % Find the neighborhood
+    % finding the rows where our vertex of interest appears
+    % collapse across rows using sum() then binarise using logical
     neighborhood_idx = logical(sum(GIFTI_SURF.faces == i,2));
     I = unique(GIFTI_SURF.faces(neighborhood_idx,:));
     neighborhood = DATA(I,:);
@@ -32,10 +38,11 @@ parfor (i = 1:size(GIFTI_SURF.vertices,1), nthreads)
     AFFINITY = vb_create_affinity_matrix(neighborhood);
     
     % Find the algebraic connectivity (second smallest eigenvalue of laplacian)
-    [~, ~, ~, ~, sortedEigenValues] = spectral_reorder(AFFINITY , 'unnorm');
+    [~, ~, ~, ~, sortedEigenValues] = spectral_reorder(AFFINITY , NORM);
     
     % Normalise result for connectivity to be between zero and one.
-    normalisation_factor = sum(sortedEigenValues) / (sum(sortedEigenValues)-1);
+%     normalisation_factor = sum(sortedEigenValues) / (numel(sortedEigenValues)-1);
+    normalisation_factor = mean(sortedEigenValues(2:end));
     RESULT(i,1) = sortedEigenValues(2)/normalisation_factor;
     
 end
