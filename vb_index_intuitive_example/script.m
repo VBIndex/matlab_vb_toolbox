@@ -22,6 +22,8 @@ EDGE_IM_unnorm = zeros(size(MY_IMAGE,1),size(MY_IMAGE,2));
 EDGE_IM_geig = zeros(size(MY_IMAGE,1),size(MY_IMAGE,2));
 EDGE_IM_rw = zeros(size(MY_IMAGE,1),size(MY_IMAGE,2));
 
+% set up warning ID to catch - this may occur at edges of image
+WARNID = 'MATLAB:nearlySingularMatrix';
 
 %% Computations
 
@@ -67,23 +69,25 @@ for i = 2:(size(MY_IMAGE,1)-1)
         % laplacian of the affinity matrix
         
         % note that these conditionals ensure that if there are ANY
-        % warnings generated in the code, the pixel value for that
-        % computation will be a NaN.
+        % singular matrices then the resultant pixel value will be a NaN.
         msg=lastwarn('');
         [~, ~, ~, ~, sortedEigenValues_unnorm] = spectral_reorder(AFFINITY , 'unnorm');
-        if ~isempty(msg)
+        [~ , LASTID] = lastwarn;
+        if strcmp(WARNID , LASTID)
             sortedEigenValues_unnorm = [nan nan];
         end
         
         msg=lastwarn('');
         [~, ~, ~, ~, sortedEigenValues_geig] = spectral_reorder(AFFINITY , 'geig');
-        if ~isempty(msg)
+        [~ , LASTID] = lastwarn;
+        if strcmp(WARNID , LASTID)
             sortedEigenValues_geig = [nan nan];
         end
         
         msg=lastwarn('');
         [~, ~, ~, ~, sortedEigenValues_rw] = spectral_reorder(AFFINITY , 'rw');
-        if ~isempty(msg)
+        [~ , LASTID] = lastwarn;
+        if strcmp(WARNID , LASTID)
             sortedEigenValues_geig = [nan nan];
         end
         
