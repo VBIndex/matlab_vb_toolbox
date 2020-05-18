@@ -58,7 +58,7 @@ for i = 2:(size(MY_IMAGE,1)-1)
         % into problems later
         neighborhood = double(neighborhood);
         neighborhood(neighborhood==0) = eps;
-        neighborhood = rgb2hsv(neighborhood/255);
+        neighborhood = rgb2hsv(neighborhood/255); % change from rgb to hsv since it is more intuitive to find edges of this representation
         
         % Create the affinity matrix (between rgb vectors)
         AFFINITY = vb_create_affinity_matrix(neighborhood);
@@ -66,6 +66,9 @@ for i = 2:(size(MY_IMAGE,1)-1)
         % Solve the generalised eigenvalue problem for the
         % laplacian of the affinity matrix
         
+        % note that these conditionals ensure that if there are ANY
+        % warnings generated in the code, the pixel value for that
+        % computation will be a NaN.
         msg=lastwarn('');
         [~, ~, ~, ~, sortedEigenValues_unnorm] = spectral_reorder(AFFINITY , 'unnorm');
         if ~isempty(msg)
