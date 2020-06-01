@@ -1,5 +1,8 @@
 function A = vb_create_affinity_matrix(neighborhood)
 
+% USE:
+% A = vb_create_affinity_matrix(neighborhood)
+% Outputs a normalised angle affinity matrix
 
 % Create a mean centered neighborhood
 neighborhood_mean = mean(neighborhood,2);
@@ -18,7 +21,7 @@ AFFINITY = neighborhood*neighborhood';
 % leads to complex numbers in AFFINITY
 AFFINITY(AFFINITY>.9999999)=1;
 
-% "Linearlise" the AFFINITY 
+% "Linearlise" the AFFINITY (create the normalised angle)
 % ensure positive correlations are between 0 to 1
 % what i am doing here is to change cosines to angles but to ensure that
 % this remains a similarity rather than dissimilarity I am treating the

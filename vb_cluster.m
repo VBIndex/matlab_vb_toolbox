@@ -1,5 +1,20 @@
 function [ RESULT_EigenValues , RESULT_EigenVectors ]= vb_cluster(DATA, NORM, CORT_INDEX, CLUST_INDEX, OUTPUT, nthreads)
 
+% This is the main function needed to run the full brain principal gradient or
+% the clustered gradients and associated VB Indices
+% 
+% DATA == GIFTI data (timeseries) 
+% NORM == the laplacian normalisation 'geig' (default), 'sym', 'rw', or 'unnorm' 
+% CORT_INDEX == an index of cortical vertices
+% CLUST_INDEX == a parcellation file in gifti format indicating your parcels
+%                for a whole brain gradient, CLUST_INDEX should be the same
+%                as CORT_INDEX
+% OUTPUT == a string for the basename of your output file, put in empty
+% vector if no output to save "[]"
+% nthreads == number of threads for this command (default == 0)
+%
+% [RESULT_EigenValues, RESULT_EigenVectors] = vb_cluster(DATA, NORM, CORT_INDEX, CLUST_INDEX, OUTPUT, nthreads)
+%
 % claude.bajada@um.edu.mt
 
 % create default threads

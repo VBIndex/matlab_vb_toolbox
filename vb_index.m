@@ -1,9 +1,10 @@
 function RESULT = vb_index(GIFTI_SURF, DATA, NORM, CORT_INDEX, OUTPUT, nthreads)
 
-% Script to produce the VB index
-%
+% This is the main function needed to run the searchlight VB Index
+% 
 % GIFTI_SURF == cortical surface GIFTI object that matches the data
 % DATA == the data that matches the GIFTI surface
+% NORM == the laplacian normalisation 'geig' (default), 'sym', 'rw', or 'unnorm' 
 % CORT_INDEX == an index of cortical vertices
 % OUTPUT == a string for the basename of your output file, put in empty
 % vector if no output to save "[]"
